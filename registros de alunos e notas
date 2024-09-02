@@ -1,0 +1,85 @@
+-- Passo 1: Criar o banco de dados
+
+DROP DATABASE IF EXISTS SistemaEscolar;
+CREATE DATABASE SistemaEscolar;
+USE SistemaEscolar;
+-- Passo 2: Criar a tabela de Alunos
+CREATE TABLE Alunos (
+    AlunoID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    DataNascimento DATE,
+    Email VARCHAR(100)
+);
+
+-- Passo 3: Criar a tabela de Cursos
+CREATE TABLE Cursos (
+    CursoID INT AUTO_INCREMENT PRIMARY KEY,
+    NomeCurso VARCHAR(100) NOT NULL,
+    Descricao TEXT
+);
+
+-- Passo 4: Criar a tabela de Notas
+CREATE TABLE Notas (
+    NotaID INT AUTO_INCREMENT PRIMARY KEY,
+    AlunoID INT,
+    CursoID INT,
+    Nota DECIMAL(5,2), -- Permite valores como 10.00
+    FOREIGN KEY (AlunoID) REFERENCES Alunos(AlunoID),
+    FOREIGN KEY (CursoID) REFERENCES Cursos(CursoID)
+);
+
+-- Passo 5: Inserir dados na tabela Alunos
+INSERT INTO Alunos (Nome, DataNascimento, Email) VALUES
+('João Silva', '2000-01-15', 'joao.silva@example.com'),
+('Maria Oliveira', '1999-05-22', 'maria.oliveira@example.com'),
+('Carlos Santos', '2001-11-30', 'carlos.santos@example.com');
+
+-- Passo 6: Inserir dados na tabela Cursos
+INSERT INTO Cursos (NomeCurso, Descricao) VALUES
+('Matemática', 'Curso de Matemática Básica e Avançada'),
+('História', 'Curso de História Geral e Brasileira'),
+('Programação', 'Curso de Programação em Python e Java');
+
+
+-- Passo 7: Inserir dados na tabela Notas
+INSERT INTO Notas (AlunoID, CursoID, Nota) VALUES
+(1, 1, 8.50), -- João Silva em Matemática
+(1, 2, 7.00), -- João Silva em História
+(2, 1, 9.00), -- Maria Oliveira em Matemática
+(2, 3, 8.75), -- Maria Oliveira em Programação
+(3, 2, 6.50), -- Carlos Santos em História
+(3, 3, 9.25); -- Carlos Santos em Programação
+
+SELECT 
+    Alunos.Nome AS Aluno, 
+    Cursos.NomeCurso AS Curso, 
+    Notas.Nota
+FROM 
+    Notas
+JOIN 
+    Alunos ON Notas.AlunoID = Alunos.AlunoID
+JOIN 
+    Cursos ON Notas.CursoID = Cursos.CursoID;
+SELECT 
+
+    Cursos.NomeCurso AS Curso, 
+    AVG(Notas.Nota) AS NotaMedia
+FROM 
+    Notas
+JOIN 
+    Cursos ON Notas.CursoID = Cursos.CursoID
+GROUP BY 
+    Cursos.NomeCurso;
+SELECT 
+    Alunos.Nome AS Aluno, 
+    Cursos.NomeCurso AS Curso, 
+    Notas.Nota
+    
+FROM 
+    Notas
+JOIN 
+    Alunos ON Notas.AlunoID = Alunos.AlunoID
+JOIN 
+    Cursos ON Notas.CursoID = Cursos.CursoID
+WHERE 
+    Alunos.Nome = 'João Silva';
